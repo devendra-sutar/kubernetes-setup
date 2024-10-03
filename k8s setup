@@ -1,0 +1,48 @@
+On Master:
+    1  sudo apt-get update -y
+    2  sudo apt-get install docker.io -y
+    3  curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl.sha256"
+    4  sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+    5  kubectl version --client
+    6  sudo apt-get update
+    7  sudo apt-get install -y apt-transport-https ca-certificates curl
+    8  curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.30/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+    9  sudo chmod 644 /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+   10  echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.30/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
+   11  sudo chmod 644 /etc/apt/sources.list.d/kubernetes.list
+   12  sudo apt-get update
+   13  sudo apt-get install -y kubectlkubeadm kubelet
+   14  sudo apt-get install -y kubectl kubeadm kubelet
+   15  sudo systemctl enable kubelet &&  sudo systemctl start kubelet
+  ///// 16  sudo kubeadm init --pod-network-cidr=192.168.0.0/16
+   17  sudo kubeadm init --pod-network-cidr=192.168.0.0/16  --ignore-preflight-errors=all
+   18  mkdir -p $HOME/.kube
+   19  sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+   20  sudo chown $(id -u):$(id -g) $HOME/.kube/config
+   21  sudo su
+          Export 
+          exit
+   22  kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.27.3/manifests/tigera-operator.yaml
+   23  kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.27.3/manifests/custom-resources.yaml
+   24  kubectl get nodes
+   25  kubectl get componentstatus
+   26  history
+
+
+On Worker:
+1	sudo apt-get update –y
+2	  sudo apt-get install docker.io -y
+    2  curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl.sha256"
+    3  sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+    4  kubectl version --client
+    5  sudo apt-get update
+    6  sudo apt-get install -y apt-transport-https ca-certificates curl
+    7  curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.30/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+    8  sudo chmod 644 /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+    9  echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.30/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
+   10  sudo chmod 644 /etc/apt/sources.list.d/kubernetes.list
+   11  sudo apt-get update
+   12  sudo apt-get install -y kubectl kubadm kubelet
+   13  sudo apt-get install -y kubectl kubeadm kubelet
+   14  sudo systemctl enable kubelet &&  sudo systemctl start kubelet
+   15  sudo kubeadm join 172.31.36.163:6443 --token 2tfqzt.aekg5f7kpuwwpzk7 --discovery-token-ca-cert-hash sha256:ccfb48acb1a96cf3713608ceb4e103fc82a56479682b911dfe754bbe577686f0
